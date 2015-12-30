@@ -1,0 +1,35 @@
+{
+  "name": "pouch-redux",
+  "description": "a few helpers to get pouch and redux to work together",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel --extensions .es6 --ignore node_modules/**,__tests__/**,playground/** --out-dir . .",
+    "clean": "find . -name '*.js*' -type f -not -path './package.json' -not -path './node_modules/*' -exec rm {} \\;",
+    "prepublish": "npm run build",
+    "test": "NODE_ENV=test babel-node node_modules/.bin/tape **/__tests__/*-test.es6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UXtemple/pouch-redux.git"
+  },
+  "keywords": [
+    "pouch",
+    "redux"
+  ],
+  "author": "Darío Javier Cravero <dario@uxtemple.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UXtemple/pouch-redux/issues"
+  },
+  "homepage": "https://github.com/UXtemple/pouch-redux#readme",
+  "devDependencies": {
+    "babel": "^6.3.26",
+    "babel-cli": "^6.3.17",
+    "babel-plugin-transform-export-extensions": "^6.3.13",
+    "babel-plugin-transform-object-rest-spread": "^6.3.13",
+    "babel-preset-es2015": "^6.3.13"
+  },
+  "dependencies": {
+    "pouchdb": "^5.1.0"
+  }
+}
