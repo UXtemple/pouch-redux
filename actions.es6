@@ -35,3 +35,11 @@ export function setSettings({local, remote}) {
     }
   };
 }
+
+export const SET_SYNCING = 'pouch-redux/SET_SYNCING';
+export function setSyncing(active) {
+  return {
+    type: SET_SYNCING,
+    payload: active
+  };
+}

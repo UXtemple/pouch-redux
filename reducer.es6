@@ -1,11 +1,12 @@
 import { LOGIN, LOGOUT } from './auth/actions';
-import { LOAD, SET_READY, SET_SETTINGS } from './actions';
+import { LOAD, SET_READY, SET_SETTINGS, SET_SYNCING } from './actions';
 import authReducer, { DEFAULT as AUTH_DEFAULT } from './auth/reducer';
 
 const DEFAULT = {
   auth: AUTH_DEFAULT,
   isLoading: false,
-  isReady: false
+  isReady: false,
+  isSyncing: false
 };
 
 export default function pouchReducer(state=DEFAULT, action) {
@@ -60,6 +61,13 @@ export default function pouchReducer(state=DEFAULT, action) {
     nextState = {
       ...state,
       ...action.payload
+    };
+    break;
+
+  case SET_SYNCING:
+    nextState = {
+      ...state,
+      isSyncing: action.payload
     };
     break;
 
