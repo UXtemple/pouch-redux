@@ -9,8 +9,13 @@ export default function getPouch(pouch) {
   if (!pouchs[key]) {
     // Create the local PouchDB instance
     const db = new PouchDB(pouch.local.name, pouch.local.options);
-    // And sync it to the remote!
-    const syncHandler = db.sync(pouch.remote.name, pouch.remote.options);
+
+    let syncHandler;
+
+    if (pouch.remote) {
+      // And sync it to the remote!
+      syncHandler = db.sync(pouch.remote.name, pouch.remote.options);
+    }
 
     pouchs[key] = {
       db,

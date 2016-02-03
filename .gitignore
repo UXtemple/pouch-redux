@@ -1,5 +1,4 @@
-**/*.js
+dist/*
 *.log
 .DS_Store
 node_modules/*
-public/*.js*

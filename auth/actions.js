@@ -1,7 +1,7 @@
-import * as adapter from "./adapter";
-import getKey from "../get-key";
-import getPouch from "../get-pouch";
-import lookup from "../lookup";
+import * as adapter from './adapter';
+import getKey from '../get-key';
+import getPouch from '../get-pouch';
+import lookup from '../lookup';
 
 function makeSurePouchReduxIsMountedOnStore(pouch) {
   if (!(pouch && pouch.remote && pouch.remote.name)) {
@@ -9,7 +9,7 @@ function makeSurePouchReduxIsMountedOnStore(pouch) {
   }
 }
 
-export const LOGIN = "pouch-redux/auth/LOGIN";
+export const LOGIN = 'pouch-redux/auth/LOGIN';
 export function login({user, password}) {
   return function loginThunk(dispatch, getState) {
     const { pouch } = getState();
@@ -32,7 +32,7 @@ export function login({user, password}) {
   }
 }
 
-export const LOGOUT = "pouch-redux/auth/LOGOUT";
+export const LOGOUT = 'pouch-redux/auth/LOGOUT';
 export function logout() {
   return function logoutThunk(dispatch, getState) {
     const { pouch } = getState();
@@ -48,6 +48,29 @@ export function logout() {
     dispatch({
       type: LOGOUT,
       payload
+    });
+  }
+}
+
+export const SIGNUP = 'pouch-redux/auth/SIGNUP';
+export function signup({user, password, ...extra}) {
+  return function signupThunk(dispatch, getState) {
+    const { pouch } = getState();
+    makeSurePouchReduxIsMountedOnStore(pouch);
+
+    const payload = adapter.signup(pouch.remote.name, user, password, extra);
+
+    payload.then(() => lookup.put({
+      _id: getKey(pouch),
+      user
+    }));
+
+    dispatch({
+      type: SIGNUP,
+      payload,
+      meta: {
+        user
+      }
     });
   }
 }

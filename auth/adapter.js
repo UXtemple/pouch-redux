@@ -4,6 +4,10 @@ import ajax from 'pouchdb/extras/ajax';
 // It might be a browser thing in which it doesn't think requests to the same endpoint are the same
 // despite the mechanism used to send them and thus doesn't set the cookie?
 
+function getUsersUrl(remote) {
+  return `${remote.match(/^(https?:\/\/.+)\//)[1]}/_users`;
+}
+
 function getSessionUrl(remote) {
   return `${remote.match(/^(https?:\/\/.+)\//)[1]}/_session`;
 }
@@ -38,5 +42,30 @@ export function login(remote, name, password) {
 export function logout(remote) {
   return fetchSession(remote, {
     method: 'DELETE'
+  });
+}
+
+export function signup(remote, name, password, extra={}) {
+  return new Promise((resolve, reject) => {
+    ajax({
+      body: {
+        ...extra,
+        _id: `org.couchdb.user:${name}`,
+        name,
+        password,
+        roles: [],
+        type: 'user'
+      },
+      method: 'POST',
+      url: getUsersUrl(remote)
+    }, (err, res) => {
+      if (err) {
+        const error = new Error(err.message);
+        error.response = err;
+        reject(error);
+      } else {
+        login(remote, name, password).then(res2 => resolve(res2));
+      }
+    })
   });
 }

@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from './actions';
+import { LOGIN, LOGOUT, SIGNUP } from './actions';
 
 export const DEFAULT = {
   isLoading: false,
@@ -10,6 +10,7 @@ export default function pouchAuthReducer(state=DEFAULT, action) {
 
   switch (action.type) {
   case LOGIN:
+  case SIGNUP:
     if (action.sequence.type === 'start') {
       nextState = {
         ...state,
