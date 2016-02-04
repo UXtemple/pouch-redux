@@ -2,11 +2,19 @@ import * as adapter from './adapter';
 import getKey from '../get-key';
 import getPouch from '../get-pouch';
 import lookup from '../lookup';
+import PouchDB from 'pouchdb';
 
 function makeSurePouchReduxIsMountedOnStore(pouch) {
   if (!(pouch && pouch.remote && pouch.remote.name)) {
     throw "We need pouch.remote.name in the redux store. Did you mount pouch-redux's reducer?";
   }
+}
+
+// TODO review as this is kind of hacky but it does the trick
+// we essentially need to make sure the remote db exists right after the user logged in so
+// that we can sync back to it
+function makeSureRemoteExists(pouch) {
+  new PouchDB(pouch.remote.name);
 }
 
 export const LOGIN = 'pouch-redux/auth/LOGIN';
@@ -17,10 +25,12 @@ export function login({user, password}) {
 
     const payload = adapter.login(pouch.remote.name, user, password);
 
-    payload.then(() => lookup.put({
-      _id: getKey(pouch),
-      user
-    }));
+    payload
+      .then(() => lookup.put({
+        _id: getKey(pouch),
+        user
+      }))
+      .then(() => makeSureRemoteExists(pouch));
 
     dispatch({
       type: LOGIN,
@@ -60,10 +70,12 @@ export function signup({user, password, ...extra}) {
 
     const payload = adapter.signup(pouch.remote.name, user, password, extra);
 
-    payload.then(() => lookup.put({
-      _id: getKey(pouch),
-      user
-    }));
+    payload
+      .then(() => lookup.put({
+        _id: getKey(pouch),
+        user
+      }))
+      .then(() => makeSureRemoteExists(pouch));
 
     dispatch({
       type: SIGNUP,
